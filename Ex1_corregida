@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main() {
+    int pipe1[2], pipe2[2], pipe3[2];
+    pid_t pid, pid_hijo;
+
+    pipe(pipe1);
+    pipe(pipe2);
+    pipe(pipe3);
+
+    pid = fork();
+
+    if (pid == 0) {
+        pid_hijo = fork();
+
+        if (pid_hijo == 0) { // Proceso P3
+            //wait(NULL);
+            close(pipe3[1]);
+            close(pipe2[0]);
+            //close(pipe1[1]);
+            
+            int nLeidoP2, sumaPares = 0, productoImpares = 1, nLeidoP1, cont = 0;
+	    read(pipe3[0], &nLeidoP1, sizeof(int));
+	    //printf("%d",nLeidoP1);
+            while ( cont < nLeidoP1 ) {
+            printf("P3 ");
+                read(pipe3[0], &nLeidoP2, sizeof(int));
+                if (nLeidoP2 % 2 == 0) {
+                    sumaPares += nLeidoP2;
+                } else {
+                    productoImpares *= nLeidoP2;
+                }
+                
+                cont++;
+            }
+
+
+            write(pipe2[1], &sumaPares, sizeof(int));
+            write(pipe2[1], &productoImpares, sizeof(int));
+
+            //close(pipe1[0]);
+            close(pipe3[0]);
+            close(pipe2[1]);
+            exit(0);
+        } else { // Proceso P2
+        
+            close(pipe1[1]);
+            close(pipe3[0]);
+            close(pipe2[1]);
+
+            int nLeidoP1, nIntroducidoP2, sumaPar = 0, productoImpar = 1;
+
+            read(pipe1[0], &nLeidoP1, sizeof(int));
+            write(pipe3[1], &nLeidoP1, sizeof(int));
+            for (int x = 0; x < nLeidoP1; x++) {
+                printf("Introduce numero: ");
+                scanf("%d", &nIntroducidoP2);
+                write(pipe3[1], &nIntroducidoP2, sizeof(int));
+                //printf("x %d, nLeidoP1 %d\n", x, nLeidoP1);
+            }
+            
+//printf("P2 ");
+            close(pipe3[1]);
+
+            waitpid(pid_hijo, NULL, 0);  // Esperar a que P3 termine
+
+            read(pipe2[0], &sumaPar, sizeof(int));
+            read(pipe2[0], &productoImpar, sizeof(int));
+
+            printf("La suma de los numeros pares es igual a = %d\n", sumaPar);
+            printf("El producto de los numeros impares es igual a = %d\n", productoImpar);
+
+            close(pipe1[0]);
+            close(pipe2[0]);
+            
+            exit(0);
+        }
+    } else { // Proceso P1
+        close(pipe1[0]);
+
+        int nIntroducido;
+        printf("Introduce la cantidad de numeros a procesar: ");
+        scanf("%d", &nIntroducido);
+        write(pipe1[1], &nIntroducido, sizeof(int));
+        close(pipe1[1]);
+
+        waitpid(pid, NULL, 0);  // Esperar a que P2 termine
+        //waitpid(pid_hijo, NULL, 0); 
+        
+    }
+
+    return 0;
+}
