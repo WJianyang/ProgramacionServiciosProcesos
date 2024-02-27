@@ -1,0 +1,25 @@
+public class Productor  extends Thread {
+	
+	private Deposito dep;
+	private double litros;
+	//Constructor clase productor
+	public Productor(Deposito dep){
+		this.dep = dep;
+	}
+	public void run(){
+		for(int i = 0; i < 15; i++) {
+			litros = (int) (Math.random() * 1000) + 1;
+			
+			System.out.println("Productor llena el depósito con => " +litros+ " Litros");
+			dep.prodLlenaDep(litros);
+			try {
+	             sleep(1000);
+
+	         } catch (InterruptedException e) {
+	             System.out.println(e.getMessage());
+	         }
+		}
+	}
+
+
+}
