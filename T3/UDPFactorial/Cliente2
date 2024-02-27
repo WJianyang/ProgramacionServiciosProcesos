@@ -1,0 +1,51 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+public class UDPCliente2 {
+	
+	public static void main(String[] args) throws IOException {
+
+		DatagramSocket clientSocket = new DatagramSocket();// socket cliente
+
+		// DATOS DEL SERVIDOR al que enviar mensaje
+		InetAddress IPServidor = InetAddress.getLocalHost();// localhost
+		int puerto = 12345; // puerto por el que escucha
+		
+		byte[] enviarV = new byte[1];
+        DatagramPacket envioV = new DatagramPacket(enviarV, enviarV.length, IPServidor, puerto);
+        clientSocket.send(envioV);
+		
+		// RECIBIENDO DATAGRAMA DEL SERVIDOR
+		byte[] recibidos = new byte[2];
+		DatagramPacket recibo = new DatagramPacket(recibidos, recibidos.length);
+		System.out.println("Esperando datagrama....");
+		clientSocket.receive(recibo);
+		System.out.println("Recibido");
+		// Obtener el numero e caracteres
+		byte[] hh = recibo.getData();
+		int numero = hh[0];
+		System.out.println(numero);
+		System.out.println(factorial(numero));
+		int r = factorial(numero);
+		String n = String.valueOf(r);
+		byte[] enviados =   n.getBytes();//0
+
+		// ENVIANDO DATAGRAMA AL SERVIDOR
+		DatagramPacket envio = new DatagramPacket(enviados, enviados.length, IPServidor, puerto);
+		clientSocket.send(envio);
+		System.out.println("Enviado");
+		clientSocket.close();// cerrar socket
+
+	}
+	
+	public static int factorial(int n) {
+		int r = 1;
+		while(n >= 1) {
+			r *= n;
+			n--;
+		}
+		return r;
+	}
+}
