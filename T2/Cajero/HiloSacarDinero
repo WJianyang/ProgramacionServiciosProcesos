@@ -1,0 +1,27 @@
+public class HiloSacarDinero extends Thread {
+
+	private CuentaBancaria cuenta;
+	private String nombre;
+	private int cantidad;
+	
+	HiloSacarDinero(CuentaBancaria miCuenta, String nombre, int cantidad){
+		this.cuenta = miCuenta;
+		this.nombre = nombre;
+		this.cantidad = cantidad;
+	}
+	
+	public void run() {
+		cuenta.sacarDinero(nombre, cantidad);
+		/*
+		if(cuenta.saldo < cantidad) {
+			System.out.println(nombre + " no puede sacar " + cantidad + "€ -> NO HAY SALDO SUFICIENTE");
+		} 
+		else {
+			cuenta.saldo  -= cantidad;
+			System.out.println(nombre + " ingreso en la cuenta " + cantidad + "€");
+			System.out.println("Saldo actual en la cuenta = " + cuenta.saldo  + "€");
+		}
+		 */
+		
+	}
+}
