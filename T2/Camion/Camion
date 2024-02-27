@@ -1,0 +1,22 @@
+public class Camion extends Thread {
+
+	private Deposito dep;
+	private int n;
+	//Constructor clase camión: n -> número de camión
+	public Camion (Deposito dep, int n)	{
+		this.dep = dep;
+		this.n = n;
+	}
+	public void run(){
+		double litros, total = 0;
+		for(int i = 0; i < 5; i++) {
+			litros = dep.llenarDepositoCamion();
+			System.out.println("Camión " +n+ " carga: " +litros+" litros");
+			total += litros;
+			
+		}
+		System.out.println("Camión " +n+ " => Volumen Total Recogido = " +total+" Operación carga finalizada!!");
+	}
+
+
+}
