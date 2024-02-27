@@ -1,0 +1,39 @@
+public class Deposito {
+
+	private double litrosdeposito;
+	private boolean empty = true;
+
+	//método realiza llenado depósito del camión
+	public synchronized double llenarDepositoCamion() {
+		while (empty){
+            try {
+                wait();
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        empty = true;
+        notifyAll();
+		return litrosdeposito;
+	}
+	//método productor llena el depósito
+	public synchronized void prodLlenaDep(double litros){
+		while(!empty){
+            try {
+                wait();
+
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        empty = false;
+        litrosdeposito = litros;
+        System.out.println("Productor llena el depósito con => " + litros + " Litros");
+
+        notifyAll();
+	}
+
+}
