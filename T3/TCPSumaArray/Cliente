@@ -1,0 +1,72 @@
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class TCPCliente {
+
+	public static void main(String[] args) throws Exception {
+		String Host = "localhost";
+		int Puerto = 6666;//puerto remoto
+		Scanner sc = new Scanner(System.in);
+		try {
+			while(true) {
+				System.out.println("PROGRAMA CLIENTE INICIADO....");
+				Socket Cliente = new Socket(Host, Puerto);
+
+				// Creación flujo de salida hacia el servidor
+				DataOutputStream flujoSalida = new DataOutputStream(Cliente.getOutputStream());
+
+				//Crear 10 numero aleatorio
+				int[] n = new int[10];
+				StringBuilder numeros = new StringBuilder();
+				for(int i = 0; i < n.length; i++) {
+					 n[i] = (int)(Math.random() * (100 - 1) + 1);
+					 numeros.append(n[i] + " ");
+				}
+				String nGenerados = numeros.toString().trim();
+				System.out.println("10 numero aletorio creado");
+				
+				//Enviar al servidor
+				flujoSalida.writeInt(n.length);
+				for(int j = 0; j < n.length; j++) {
+					flujoSalida.writeInt(n[j]);
+				}
+				System.out.println("Enviando al servidor....");
+
+				// Creación flujo de entrada desde el servidor
+				DataInputStream flujoEntrada = new  DataInputStream(Cliente.getInputStream());
+
+				//Recibiendo flujo de entrada
+				int sum, min, max;
+				sum = flujoEntrada.readInt();
+				min = flujoEntrada.readInt();
+				max = flujoEntrada.readInt();
+				
+				System.out.println("Recibiendo del SERVIDOR: \n\t" + numeros 
+						+ "\n\t Suma de los numeros: " + sum
+						+ "\n\t Minimo de los numeros: " + min
+						+ "\n\t Maximo de los numeros: " + max);
+
+				System.out.print("¿Desea realizar otra operación? (S/N): ");
+	            String respuesta = sc.nextLine().trim().toLowerCase();
+	            if (!respuesta.equals("s")) {
+	                System.out.println("Cerrando el programa del cliente. ¡Hasta luego!");
+	                break;
+	            }
+			}
+			
+            /*
+			// CERRAR STREAMS Y SOCKETS	
+			flujoEntrada.close();	
+			flujoSalida.close();	
+			Cliente.close();	
+			*/
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+}
