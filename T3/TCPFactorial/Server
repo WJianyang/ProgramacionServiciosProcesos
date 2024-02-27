@@ -1,0 +1,72 @@
+import java.io.*;
+import java.net.*;
+
+public class TCPServer {
+
+	public static void main(String[] arg) throws IOException {
+		int numeroPuerto = 6666;// Puerto
+		ServerSocket servidor = new ServerSocket(numeroPuerto);
+		Socket cliente1 = null;
+		Socket cliente2 = null;
+		System.out.println("Esperando al cliente.....");
+		cliente1 = servidor.accept();
+		cliente2 = servidor.accept();
+
+		// Creación flujo de entrada del cliente1
+		InputStream entrada1 = null;
+		entrada1 = cliente1.getInputStream();
+		DataInputStream flujoEntrada1 = new DataInputStream(entrada1);
+		int r1 = flujoEntrada1.readInt();  // Lee un entero del flujo de entrada del cliente1
+		//Recibiendo datos del cliente1 ...
+		System.out.println("Recibiendo del CLIENTE1: \n\t" + r1);
+
+		// Creación flujo de salida del cliente2
+		OutputStream salida2 = null;
+		salida2 = cliente2.getOutputStream();
+		DataOutputStream flujoSalida2 = new DataOutputStream(salida2);
+
+		System.out.println("Esperando al cliente 2");
+		//Enviando datos al cliente2
+		try {
+		    flujoSalida2.writeInt(r1);  // Envía el entero al flujo de salida del cliente2
+		    flujoSalida2.flush();  // Asegura que los datos se envíen inmediatamente
+		} catch (IOException e) {
+		    e.printStackTrace();
+		    // Manejo de la excepción (cerrar conexiones, etc.)
+		}
+		
+		System.out.println("Esperando al cliente 2");
+		
+		// Creación flujo de entrada del cliente2
+		InputStream entrada2 = null;
+		entrada2 = cliente2.getInputStream();
+		DataInputStream flujoEntrada2 = new DataInputStream(entrada2);
+		int r2 = flujoEntrada2.readInt();
+		//Recibiendo datos del cliente2 ...
+		System.out.println("Recibiendo del CLIENTE2: \n\t" + r2);
+		
+		// Creación flujo de salida del cliente1
+		OutputStream salida1 = null;
+		salida1 = cliente1.getOutputStream();
+		DataOutputStream flujoSalida1 = new DataOutputStream(salida1);
+
+		//Enviando datos al cliente1
+
+		flujoSalida1.writeInt(r2);
+		
+		// Cierre streams y sockets
+		entrada1.close();
+		entrada2.close();
+		flujoEntrada1.close();
+		flujoEntrada2.close();
+
+		salida1.close();
+		salida2.close();
+		flujoSalida1.close();
+		flujoSalida2.close();
+		
+		cliente1.close();
+		cliente2.close();
+		servidor.close();
+	  }// main
+}
