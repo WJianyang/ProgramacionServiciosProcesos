@@ -1,0 +1,74 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class TCPServer {
+
+	public static void main(String[] arg) throws IOException {
+		int numeroPuerto = 6666;// Puerto
+		ServerSocket servidor = new ServerSocket(numeroPuerto);
+		Socket cliente = null;
+					
+		while(true) {
+			System.out.println("Esperando al cliente.....");
+			cliente = servidor.accept();
+
+			// Creación flujo de entrada del cliente
+			InputStream entrada = null;
+			entrada = cliente.getInputStream();
+			DataInputStream flujoEntrada = new DataInputStream(entrada);
+				
+			// Creación flujo de salida del cliente
+			OutputStream salida = null;
+			salida = cliente.getOutputStream();
+			DataOutputStream flujoSalida = new DataOutputStream(salida);
+			
+			//Recibiendo datos del cliente1 ...
+			int[] arrayCliente = new int[flujoEntrada.readInt()];
+			StringBuilder n = new StringBuilder();
+			for(int i = 0; i < arrayCliente.length; i++) {
+				arrayCliente[i] = flujoEntrada.readInt();
+				n.append(arrayCliente[i] + " ");
+			}
+			String nObtenido = n.toString().trim();
+			System.out.println("Recibiendo del CLIENTE: " + nObtenido);
+			
+			//Calculamos el total de los numeros, la minima y la maxima
+			int sum = 0, min = 10000, max = 0;
+			for(int j = 0; j < arrayCliente.length; j++) {
+				sum += arrayCliente[j];
+				if(min > arrayCliente[j]) {
+					min = arrayCliente[j];
+				}
+				else if(max < arrayCliente[j]) {
+					max = arrayCliente[j];
+				}
+			}
+			
+			
+			//Enviando datos al cliente
+			flujoSalida.writeInt(sum);
+			flujoSalida.writeInt(min);
+			flujoSalida.writeInt(max);
+			System.out.println("Enviando al CLIENTE....");
+			
+			/*
+			// Cierre streams y sockets
+			entrada.close();
+			flujoEntrada.close();
+
+			salida.close();
+			flujoSalida.close();
+			
+			cliente.close();
+			
+			servidor.close();
+			*/
+		}
+				
+	  }// main
+}
