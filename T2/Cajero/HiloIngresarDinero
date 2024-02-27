@@ -1,0 +1,21 @@
+public class HiloIngresarDinero extends Thread{
+
+	private CuentaBancaria cuenta;
+	private String nombre;
+	private int cantidad;
+	
+	HiloIngresarDinero(CuentaBancaria miCuenta, String nombre, int cantidad){
+		this.cuenta = miCuenta;
+		this.nombre = nombre;
+		this.cantidad = cantidad;
+	}
+	
+	public void run() {
+		cuenta.ingresarDinero(nombre, cantidad);
+		/*
+		cuenta.saldo += cantidad;
+		System.out.println(nombre + " ingreso en la cuenta " + cantidad + "€");
+		System.out.println("Saldo actual en la cuenta = " + cuenta.saldo + "€");
+		*/
+	}
+}
