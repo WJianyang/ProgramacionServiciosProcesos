@@ -1,0 +1,23 @@
+public class CajeroAutomatico {
+
+	public static void main(String[] args) {
+		CuentaBancaria cuenta = new CuentaBancaria();
+		HiloSacarDinero padre = new HiloSacarDinero(cuenta,"Padre",200);
+		HiloSacarDinero madre = new HiloSacarDinero(cuenta,"Madre",400);
+		HiloIngresarDinero hijo1 = new HiloIngresarDinero(cuenta,"Hijo1",300);
+		HiloSacarDinero hijo2 = new HiloSacarDinero(cuenta,"Hijo2",800);
+		HiloSacarDinero abuelo = new HiloSacarDinero(cuenta,"Abuelo",600);
+		
+		Thread p = new Thread(padre);
+		Thread m = new Thread(madre);
+		Thread h1 = new Thread(hijo1);
+		Thread h2 = new Thread(hijo2);
+		Thread a = new Thread(abuelo);
+		
+		p.start();
+		m.start();
+		h1.start();
+		h2.start();
+		a.start();
+	}
+}
