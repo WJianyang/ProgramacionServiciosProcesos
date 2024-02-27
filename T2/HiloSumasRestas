@@ -1,0 +1,56 @@
+public class HiloSumasRestas implements Runnable{
+
+	private String operacion;
+	private int nVeces;
+	private static int numero = 1000;
+	
+	public HiloSumasRestas(String operacion, int nVeces) {
+		this.nVeces = nVeces;
+		this.operacion = operacion;
+	}
+	
+	public synchronized int incrementar(int nVeces) {
+		for(int i = 0; i < nVeces; i++) {
+			numero++;
+		}
+		return numero;
+	}
+	
+	public synchronized int decrementar(int nVeces) {
+		for(int i = 0; i < nVeces; i++) {
+			numero--;
+		}
+		return numero;
+	}
+	
+	public void run() {
+		switch(operacion) {
+			case "+":
+				incrementar(nVeces);
+				System.out.println(numero);
+				break;
+			case "-":
+				decrementar(nVeces);
+				System.out.println(numero);
+				break;
+		}
+	}
+	
+	public static void main(String[] args) {
+		HiloSumasRestas HiloSuma1 = new HiloSumasRestas("+",100);
+		HiloSumasRestas HiloResta2 = new HiloSumasRestas("-",100);
+		HiloSumasRestas HiloSuma3 = new HiloSumasRestas("+",1);
+		HiloSumasRestas HiloResta4 = new HiloSumasRestas("-",1);
+		
+		Thread h1 = new Thread(HiloSuma1);
+		Thread h2 = new Thread(HiloResta2);
+		Thread h3 = new Thread(HiloSuma3);
+		Thread h4 = new Thread(HiloResta4);
+		
+		h1.start();
+		h2.start();
+		h3.start();
+		h4.start();		
+
+	}
+}
