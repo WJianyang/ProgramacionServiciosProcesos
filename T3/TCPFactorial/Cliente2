@@ -1,0 +1,36 @@
+import java.io.*;
+import java.net.*;
+
+public class TCPCliente2 {
+    public static void main(String[] args) throws Exception {
+        String Host = "localhost";
+        int Puerto = 6666; // Puerto remoto
+        int r = 1, recibido;
+
+        System.out.println("PROGRAMA CLIENTE INICIADO....");
+        Socket Cliente = new Socket(Host, Puerto);
+try {
+        // Creación flujo de entrada desde el servidor
+	System.out.println("Antes de crear flujo de entrada");
+	DataInputStream flujoEntrada = new DataInputStream(Cliente.getInputStream());
+	System.out.println("Después de crear flujo de entrada");
+        recibido = flujoEntrada.readInt();
+
+        while (recibido >= 1) {
+            r = r * recibido;
+            recibido--;
+        }
+
+        // Creación flujo de salida hacia el servidor
+        DataOutputStream flujoSalida = new DataOutputStream(Cliente.getOutputStream());
+        flujoSalida.writeInt(r);
+
+        // CERRAR STREAMS Y SOCKETS
+        flujoEntrada.close();
+        flujoSalida.close();
+        Cliente.close();
+}catch(IOException e) {
+	e.printStackTrace();
+}
+    }
+}
