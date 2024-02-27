@@ -1,0 +1,63 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+public class UDPServer {
+	public static void main(String[] args) throws IOException {
+
+		// Asocio el socket al puerto 12345
+		DatagramSocket socket = new DatagramSocket(12345);
+
+		System.out.println("Servidor Esperando Datagrama .......... ");
+		DatagramPacket recibo1;
+		DatagramPacket recibo2V;
+		DatagramPacket recibo2;
+		
+		recibo2V = recibir(socket);
+		recibo1 = recibir(socket);
+		
+	    int n1 = Integer.parseInt(new String(recibo1.getData()).trim());
+		System.out.println("Servidor Recibe del Cliente 1: " + n1);
+		
+		// ENVIAR DATOS AL CLIENTE 2
+		System.out.println("Enviando datos al Cliente 2...");
+		byte[] recibido1 = new byte[2];
+		recibido1[0] = (byte) n1;//52
+//		byte[] enviar1 = new byte[2];
+//		enviar1[0] = recibido1[0];
+		enviar(socket,recibido1,recibo2V);
+
+		//RECIBIR CLIENTE 2
+		recibo2 = recibir(socket);
+		String mensaje2 = new String(recibo2.getData()).trim();
+		//int n2 = Integer.parseInt(mensaje2);
+		//String n2 = new String(recibo2.getData()).trim();
+		System.out.println("Servidor Recibe del Cliente 2: " + mensaje2);
+		
+		//ENVIAR
+		System.out.println("Servidor Enviando al Cliente 1...");
+		byte[] recibido2 = mensaje2.getBytes();
+		enviar(socket,recibido2,recibo1);
+		// CERRAR STREAMS Y SOCKETS
+		System.out.println("Cerrando conexion...");
+		socket.close();
+		
+
+	}
+	
+	public static void enviar(DatagramSocket socket,byte[] buffer, DatagramPacket enviar) throws IOException {
+		InetAddress IPOrigen = enviar.getAddress();
+		int puerto = enviar.getPort();
+		DatagramPacket envio = new DatagramPacket(buffer, buffer.length, IPOrigen, puerto);
+		socket.send(envio);
+		
+	}
+	
+	public static DatagramPacket recibir(DatagramSocket socket) throws IOException{
+		byte[] buffer = new byte[4];
+		DatagramPacket recibido = new DatagramPacket(buffer, buffer.length);
+		socket.receive(recibido);
+		return recibido;
+	}
+}
