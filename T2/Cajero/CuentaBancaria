@@ -1,0 +1,35 @@
+public class CuentaBancaria {
+
+	int saldo = 1000;
+	
+	void sacarDinero(String nombre, int cantidad) {
+		if(saldo < cantidad) {
+			System.out.println(nombre + " no puede sacar " + cantidad + "€ -> NO HAY SALDO SUFICIENTE");
+		} 
+		else {
+			saldo -= cantidad;
+			System.out.println(nombre + " saco en la cuenta " + cantidad + "€");
+			System.out.println("Saldo actual en la cuenta = " + saldo + "€");
+		}
+		try {
+			 Thread.sleep(1000);
+			 }
+			 catch (InterruptedException e) {
+			 e.printStackTrace();
+			 }
+
+	}
+	
+	void ingresarDinero(String nombre, int cantidad) {
+		saldo += cantidad;
+		System.out.println(nombre + " ingreso en la cuenta " + cantidad + "€");
+		System.out.println("Saldo actual en la cuenta = " + saldo + "€");
+		try {
+			 Thread.sleep(1000);
+			 }
+			 catch (InterruptedException e) {
+			 e.printStackTrace();
+			 }
+
+	}
+}
