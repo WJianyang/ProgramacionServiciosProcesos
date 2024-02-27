@@ -1,0 +1,16 @@
+public class Principal {
+
+	public static void main(String[] args) {
+		Deposito d = new Deposito();
+		Productor p = new Productor(d);
+		Camion c1 = new Camion(d,1);
+		Camion c2 = new Camion(d,2);
+		Camion c3 = new Camion(d,3);
+		
+		p.start();
+		c1.start();
+		c2.start();
+		c3.start();
+		
+	}
+}
